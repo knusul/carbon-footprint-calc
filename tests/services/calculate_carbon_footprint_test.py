@@ -2,6 +2,7 @@ import pytest
 from app.services.calculate_carbon_footprint import CalculateCarbonFootprint
 from app.models.carbon_footprint_request_payload import CarbonFootprintRequestPayload
 from app.models.energy_source import EnergySource
+from decimal import Decimal
 
 
 @pytest.fixture()
@@ -9,18 +10,18 @@ def payload():
     return [
         CarbonFootprintRequestPayload(
             energySourceId="2007",
-            consumption=1000,
+            consumption=Decimal(1000),
             description="Standort Berlin"
         ),
         CarbonFootprintRequestPayload(
             energySourceId="2004",
-            consumption=4000,
+            consumption=Decimal(4000),
             customEmissionFactor=0.25,
             description="Standort München"
         ),
         CarbonFootprintRequestPayload(
             energySourceId="4005",
-            consumption=10000,
+            consumption=Decimal(10000),
             description="Flug nach Thailand"
         )
     ]
@@ -124,29 +125,29 @@ def expected_response():
 
 @pytest.fixture()
 def mock_carbon_footprint_service():
-    mock_energy_sources = {
-        "2007": EnergySource(
-            energySourceId="2007",
-            scopeId="SCOPE_1_2",
-            name="Diesel",
-            conversionFactor="10",
-            emissionFactor="0.25"
-        ),
-        "2004": EnergySource(
-            energySourceId="2004",
-            scopeId="SCOPE_1_1",
-            name="Erdgas",
-            conversionFactor="1",
-            emissionFactor="0.2"
-        ),
-        "4005": EnergySource(
-            energySourceId="4005",
-            scopeId="SCOPE_3_6",
-            name="Flugzeug (Business Class)",
-            conversionFactor="1",
-            emissionFactor="0.2"
-        )
-    }
+    mock_energy_sources = [
+        {
+            "energySourceId": "2007",
+            "scopeId": "SCOPE_1_2",
+            "name": "Diesel",
+            "conversionFactor": "10",
+            "emissionFactor": "0.25"
+        },
+        {
+            "energySourceId": "2004",
+            "scopeId": "SCOPE_1_1",
+            "name": "Erdgas",
+            "conversionFactor": "1",
+            "emissionFactor": "0.2"
+        },
+        {
+            "energySourceId": "4005",
+            "scopeId": "SCOPE_3_6",
+            "name": "Flugzeug (Business Class)",
+            "conversionFactor": "1",
+            "emissionFactor": "0.2"
+        }
+    ]
 
     return CalculateCarbonFootprint(energy_sources=mock_energy_sources)
 
@@ -155,14 +156,15 @@ def test_calculate_carbon_footprint(mock_carbon_footprint_service, payload, expe
     result = mock_carbon_footprint_service.calculate_co2_balance(payload)
     assert result == expected_response
 
+
 def test_throws_error_when_energy_source_id_does_not_exist(mock_carbon_footprint_service):
     payload = [
         CarbonFootprintRequestPayload(
             energySourceId="999999",
-            consumption=1000,
+            consumption=Decimal(1000),
             description="Standort Berlin"
         ),
     ]
-    
+
     with pytest.raises(ValueError, match="Invalid energySourceId: 999999"):
         mock_carbon_footprint_service.calculate_co2_balance(payload)

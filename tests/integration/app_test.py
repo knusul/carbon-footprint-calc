@@ -1,8 +1,18 @@
 import pytest
+import jwt
+import os
 from fastapi.testclient import TestClient
-from app.main import app  # Import the FastAPI app from the app.main module
-import json
-from unittest.mock import mock_open, patch
+from app.main import app
+from dotenv import load_dotenv
+from decimal import Decimal
+
+@pytest.fixture(scope="session", autouse=True)
+def load_test_dotenv():
+    load_dotenv(".env.test")
+
+@pytest.fixture()
+def client():
+    return TestClient(app)
 
 @pytest.fixture()
 def payload():
@@ -10,20 +20,35 @@ def payload():
         {
             "description": "Standort Berlin",
             "energySourceId": "2007",
-            "consumption": 1000
+            "consumption": 1000.0
         },
         {
             "description": "Standort München",
             "energySourceId": "2004",
-            "consumption": 4000,
+            "consumption": 4000.0,
             "customEmissionFactor": 0.25
         }
     ]
 
-@pytest.mark.asyncio
-async def test_calculate_co2_balance(payload):
-    client = TestClient(app)
+@pytest.fixture()
+def valid_token():
+    payload = {"sub": "test_user"}
+    secret_key = os.getenv("SECRET_KEY")
+    algorithm = os.getenv("ALGORITHM")
+    return jwt.encode(payload, secret_key, algorithm=algorithm)
 
-    response = client.post("/carbon-footprint", json=payload)
+@pytest.mark.asyncio
+async def test_calculate_co2_balance_authenticated(client, payload, valid_token):
+    headers = {"Authorization": f"Bearer {valid_token}"}
+
+    response = client.post("/carbon-footprint", json=payload, headers=headers)
 
     assert response.status_code == 200
+    assert response.json() is not None 
+
+@pytest.mark.asyncio
+async def test_calculate_co2_balance_unauthenticated(client, payload):
+    response = client.post("/carbon-footprint", json=payload)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Not authenticated"}

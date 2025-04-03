@@ -1,24 +1,21 @@
 import json
 from pathlib import Path
 from typing import List, Dict
-from fastapi import HTTPException
 from app.models.carbon_footprint_request_payload import CarbonFootprintRequestPayload
 from app.models.energy_source import EnergySource
 from app.models.energy_scope import EnergyScope
-
+from decimal import Decimal
 
 class CalculateCarbonFootprint:
     def __init__(self, energy_sources: Dict[str, EnergySource] = None, scopes_data: List[dict] = None):
-        # Initialize the energy sources and scopes
-        self.ENERGY_SOURCES = energy_sources or {
-            entry["energySourceId"]: EnergySource(**entry) for entry in self.load_data("energy_sources.json")
+        self.ENERGY_SOURCES = {
+            entry["energySourceId"]: EnergySource(**entry) for entry in energy_sources or self.load_data("energy_sources.json")
         }
 
         self.SCOPES_DATA = scopes_data or [
             EnergyScope(**scope) for scope in self.load_data("scopes.json")
         ]
 
-        # Validate the structure of the scopes
         if not isinstance(self.SCOPES_DATA, list):
             raise ValueError(
                 "SCOPES_DATA should be a list, but it's not. Please check the scopes.json file.")
@@ -123,8 +120,8 @@ class CalculateCarbonFootprint:
             if not energySource:
                 raise ValueError(
                 f"Invalid energySourceId: {energy_entry.energySourceId}")
-            conversion_factor = energySource.conversionFactor
-            emission_factor = energySource.emissionFactor
+            conversion_factor = Decimal(energySource.conversionFactor)
+            emission_factor = Decimal(energySource.emissionFactor)
             scope_id = energySource.scopeId
             name = energySource.name
 
