@@ -9,7 +9,7 @@ def test_valid_consumption():
         consumption=123.45678,  # Exactly 5 decimal places
         customEmissionFactor=10.5
     )
-    assert entry.consumption == 123.45678 
+    assert entry.consumption == 123.45678
 
 def test_invalid_consumption_more_than_5_decimals():
     with pytest.raises(ValidationError, match="consumption must have a maximum of 5 decimal places"):

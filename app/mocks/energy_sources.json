@@ -1,0 +1,345 @@
+[
+    {
+        "energySourceId": "1000",
+        "scopeId": "SCOPE_2_1",
+        "name": "Strommix (Deutschland)",
+        "conversionFactor": "1",
+        "emissionFactor": "0.442"
+    },
+    {
+        "energySourceId": "1001",
+        "scopeId": "SCOPE_2_1",
+        "name": "Ökostrom (erneuerbar, eingekauft)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "1002",
+        "scopeId": "SCOPE_2_1",
+        "name": "Strom aus Eigenerzeugung (nicht-erneuerbar)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "1003",
+        "scopeId": "SCOPE_2_1",
+        "name": "Ökostrom aus Eigenerzeugung (erneuerbar)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "1004",
+        "scopeId": "SCOPE_2_1",
+        "name": "Andere Elektrizität (erneuerbar, eingekauft)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "1005",
+        "scopeId": "SCOPE_2_1",
+        "name": "Andere Elektrizität (nicht-erneuerbar)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "2000",
+        "scopeId": "SCOPE_1_1",
+        "name": "Schweröl",
+        "conversionFactor": "12184",
+        "emissionFactor": "0.25849"
+    },
+    {
+        "energySourceId": "2001",
+        "scopeId": "SCOPE_1_1",
+        "name": "Heizöl leicht",
+        "conversionFactor": "11.055",
+        "emissionFactor": "0.28413"
+    },
+    {
+        "energySourceId": "2002",
+        "scopeId": "SCOPE_1_1",
+        "name": "Braunkohle",
+        "conversionFactor": "6582.77777777778",
+        "emissionFactor": "0.33611"
+    },
+    {
+        "energySourceId": "2003",
+        "scopeId": "SCOPE_1_1",
+        "name": "Steinkohle",
+        "conversionFactor": "6582.77777777778",
+        "emissionFactor": "0.33611"
+    },
+    {
+        "energySourceId": "2004",
+        "scopeId": "SCOPE_1_1",
+        "name": "Erdgas",
+        "conversionFactor": "1",
+        "emissionFactor": "0.20226"
+    },
+    {
+        "energySourceId": "2005",
+        "scopeId": "SCOPE_1_1",
+        "name": "LPG",
+        "conversionFactor": "12.765",
+        "emissionFactor": "0.22999"
+    },
+    {
+        "energySourceId": "2006",
+        "scopeId": "SCOPE_1_2",
+        "name": "Benzin",
+        "conversionFactor": "8.965",
+        "emissionFactor": "0.23242"
+    },
+    {
+        "energySourceId": "2007",
+        "scopeId": "SCOPE_1_2",
+        "name": "Diesel",
+        "conversionFactor": "9.885",
+        "emissionFactor": "0.25076"
+    },
+    {
+        "energySourceId": "2008",
+        "scopeId": "SCOPE_1_2",
+        "name": "Wasserstoff",
+        "conversionFactor": "33.33",
+        "emissionFactor": "0.04"
+    },
+    {
+        "energySourceId": "2009",
+        "scopeId": "SCOPE_1_1",
+        "name": "Biogas intern/extern",
+        "conversionFactor": "6.3894",
+        "emissionFactor": "0.00022"
+    },
+    {
+        "energySourceId": "2011",
+        "scopeId": "SCOPE_1_1",
+        "name": "Holz (Späne)",
+        "conversionFactor": "955.834",
+        "emissionFactor": "0.01074"
+    },
+    {
+        "energySourceId": "2012",
+        "scopeId": "SCOPE_1_1",
+        "name": "Holz (Scheite)",
+        "conversionFactor": "1736.55",
+        "emissionFactor": "0.01074"
+    },
+    {
+        "energySourceId": "2013",
+        "scopeId": "SCOPE_1_1",
+        "name": "Holz (Pellets)",
+        "conversionFactor": "3120",
+        "emissionFactor": "0.01074"
+    },
+    {
+        "energySourceId": "2014",
+        "scopeId": "SCOPE_2_3",
+        "name": "Fern-Dampf",
+        "conversionFactor": "769.14",
+        "emissionFactor": "0.17791"
+    },
+    {
+        "energySourceId": "2015",
+        "scopeId": "SCOPE_2_2",
+        "name": "Fern-Wärme",
+        "conversionFactor": "1",
+        "emissionFactor": "0.17791"
+    },
+    {
+        "energySourceId": "2016",
+        "scopeId": "SCOPE_2_2",
+        "name": "Fern-Kälte",
+        "conversionFactor": "1",
+        "emissionFactor": "0.17791"
+    },
+    {
+        "energySourceId": "2017",
+        "scopeId": "SCOPE_1_1",
+        "name": "Andere Brennstoffe (Scope 1.1)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "2018",
+        "scopeId": "SCOPE_1_2",
+        "name": "Andere Treibstoffe für Mobilität (Scope 1.2)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "2021",
+        "scopeId": "SCOPE_1_1",
+        "name": "Solarthermie",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "2022",
+        "scopeId": "SCOPE_1_1",
+        "name": "Wärmerückgewinnung",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "3000",
+        "scopeId": "SCOPE_1_2",
+        "name": "Benzin",
+        "conversionFactor": "8.965",
+        "emissionFactor": "0.23242"
+    },
+    {
+        "energySourceId": "3006",
+        "scopeId": "SCOPE_1_2",
+        "name": "Diesel",
+        "conversionFactor": "9.885",
+        "emissionFactor": "0.25076"
+    },
+    {
+        "energySourceId": "3015",
+        "scopeId": "SCOPE_1_2",
+        "name": "Autogas/LPG",
+        "conversionFactor": "12.765",
+        "emissionFactor": "0.22999"
+    },
+    {
+        "energySourceId": "3022",
+        "scopeId": "SCOPE_2_1",
+        "name": "Strom (eigene Ladesäulen)",
+        "conversionFactor": "1",
+        "emissionFactor": "0.442"
+    },
+    {
+        "energySourceId": "3031",
+        "scopeId": "SCOPE_2_1",
+        "name": "Strom (fremde Ladesäulen)",
+        "conversionFactor": "1",
+        "emissionFactor": "0.442"
+    },
+    {
+        "energySourceId": "3040",
+        "scopeId": "SCOPE_1_2",
+        "name": "Benzin (Plug-In Hybrid)",
+        "conversionFactor": "0.09245",
+        "emissionFactor": "0.23242"
+    },
+    {
+        "energySourceId": "3043",
+        "scopeId": "SCOPE_1_2",
+        "name": "Diesel (Plug-In Hybrid)",
+        "conversionFactor": "0.09245",
+        "emissionFactor": "0.25076"
+    },
+    {
+        "energySourceId": "3046",
+        "scopeId": "SCOPE_1_2",
+        "name": "Wasserstoff",
+        "conversionFactor": "33.33",
+        "emissionFactor": "0.04"
+    },
+    {
+        "energySourceId": "3047",
+        "scopeId": "SCOPE_2_1",
+        "name": "Andere Elektrizität für Mobilität (erneuerbar)",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "3048",
+        "scopeId": "SCOPE_1_2",
+        "name": "Andere Treibstoffe für Mobilität",
+        "conversionFactor": "1",
+        "emissionFactor": "0"
+    },
+    {
+        "energySourceId": "4000",
+        "scopeId": "SCOPE_3_6",
+        "name": "Bahn",
+        "conversionFactor": "1",
+        "emissionFactor": "0.0351"
+    },
+    {
+        "energySourceId": "4002",
+        "scopeId": "SCOPE_3_6",
+        "name": "Bus / Fernbus",
+        "conversionFactor": "1",
+        "emissionFactor": "0.0271814013422819"
+    },
+    {
+        "energySourceId": "4003",
+        "scopeId": "SCOPE_3_6",
+        "name": "Flugzeug (Economy Class)",
+        "conversionFactor": "1",
+        "emissionFactor": "0.27101"
+    },
+    {
+        "energySourceId": "4005",
+        "scopeId": "SCOPE_3_6",
+        "name": "Flugzeug (Business Class)",
+        "conversionFactor": "1",
+        "emissionFactor": "0.27294"
+    },
+    {
+        "energySourceId": "4008",
+        "scopeId": "SCOPE_3_6",
+        "name": "Mietwagen (Benzin)",
+        "conversionFactor": "8.965",
+        "emissionFactor": "0.23242"
+    },
+    {
+        "energySourceId": "4012",
+        "scopeId": "SCOPE_3_6",
+        "name": "Mietwagen (Diesel)",
+        "conversionFactor": "9.885",
+        "emissionFactor": "0.25076"
+    },
+    {
+        "energySourceId": "4021",
+        "scopeId": "SCOPE_3_6",
+        "name": "Mietwagen (Gas)",
+        "conversionFactor": "12.765",
+        "emissionFactor": "0.22999"
+    },
+    {
+        "energySourceId": "4026",
+        "scopeId": "SCOPE_3_6",
+        "name": "Mietwagen (Strom)",
+        "conversionFactor": "1",
+        "emissionFactor": "0.442"
+    },
+    {
+        "energySourceId": "4030",
+        "scopeId": "SCOPE_3_6",
+        "name": "Mietwagen (Hybrid, Benzin)",
+        "conversionFactor": "0.09245",
+        "emissionFactor": "0.23242"
+    },
+    {
+        "energySourceId": "4033",
+        "scopeId": "SCOPE_3_6",
+        "name": "Mietwagen (Hybrid, Diesel)",
+        "conversionFactor": "0.09245",
+        "emissionFactor": "0.25076"
+    },
+    {
+        "energySourceId": "4036",
+        "scopeId": "SCOPE_3_6",
+        "name": "Taxi (Diesel)",
+        "conversionFactor": "0.82514",
+        "emissionFactor": "0.25076"
+    },
+    {
+        "energySourceId": "4037",
+        "scopeId": "SCOPE_3_6",
+        "name": "Taxi (Strom)",
+        "conversionFactor": "0.25762",
+        "emissionFactor": "0.442"
+    },
+    {
+        "energySourceId": "4038",
+        "scopeId": "SCOPE_3_6",
+        "name": "Taxi (Hybrid, Diesel)",
+        "conversionFactor": "0.30172",
+        "emissionFactor": "0.25076"
+    }
+]

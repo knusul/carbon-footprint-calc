@@ -1,0 +1,53 @@
+[
+    {
+        "id": "SCOPE_1",
+        "name": "Scope 1",
+        "label": "Brenn-/Treibstoffe, Kältemittel, Prozessemissionen",
+        "subScopes": [
+            {
+                "id": "SCOPE_1_1",
+                "name": "1.1",
+                "label": "Brennstoffe / Wärme"
+            },
+            {
+                "id": "SCOPE_1_2",
+                "name": "1.2",
+                "label": "Treibstoffe für Mobilität/Flotte"
+            }
+        ]
+    },
+    {
+        "id": "SCOPE_2",
+        "name": "Scope 2",
+        "label": "Bezogene Energien",
+        "subScopes": [
+            {
+                "id": "SCOPE_2_1",
+                "name": "2.1",
+                "label": "Strom inkl. E-Flotte"
+            },
+            {
+                "id": "SCOPE_2_2",
+                "name": "2.2",
+                "label": "Fernwärme/-kälte"
+            },
+            {
+                "id": "SCOPE_2_3",
+                "name": "2.3",
+                "label": "Ferndampf"
+            }
+        ]
+    },
+    {
+        "id": "SCOPE_3",
+        "name": "Scope 3",
+        "label": "Vor- und nachgelagerte Wertschöpfungskette",
+        "subScopes": [
+            {
+                "id": "SCOPE_3_6",
+                "name": "3.6",
+                "label": "Dienstreisen"
+            }
+        ]
+    }
+]
