@@ -8,14 +8,8 @@ from app.models.energy_scope import EnergyScope
 
 
 class CalculateCarbonFootprint:
-
-    def load_data(self, file_name: str):
-        """ Load JSON data from the file. """
-        path = Path(__file__).resolve().parent.parent / "mocks" / file_name
-        with open(path, "r") as f:
-            return json.load(f)
-
     def __init__(self, energy_sources: Dict[str, EnergySource] = None, scopes_data: List[dict] = None):
+        # Initialize the energy sources and scopes
         self.ENERGY_SOURCES = energy_sources or {
             entry["energySourceId"]: EnergySource(**entry) for entry in self.load_data("energy_sources.json")
         }
@@ -24,33 +18,111 @@ class CalculateCarbonFootprint:
             EnergyScope(**scope) for scope in self.load_data("scopes.json")
         ]
 
+        # Validate the structure of the scopes
         if not isinstance(self.SCOPES_DATA, list):
-            raise ValueError("SCOPES_DATA should be a list, but it's not. Please check the scopes.json file.")
+            raise ValueError(
+                "SCOPES_DATA should be a list, but it's not. Please check the scopes.json file.")
 
         for scope in self.SCOPES_DATA:
             if not scope.subScopes:
-                raise ValueError(f"Missing 'subScopes' in scope: {scope.id}")
+                raise ValueError(f"Missing 'subScopes' in a scope: {scope.id}")
 
-        # Create mapping for scopes (main scope level)
-        self.SCOPE_MAP = {
-            sub.id: {"name": scope.name, "label": scope.label}
-            for scope in self.SCOPES_DATA for sub in scope.subScopes
+        # Build the tree of scopes
+        self.SCOPE_TREE = self._build_scope_tree(self.SCOPES_DATA)
+        
+    def load_data(self, file_name: str):
+        """ Load JSON data from the file. """
+        path = Path(__file__).resolve().parent.parent / "mocks" / file_name
+        with open(path, "r") as f:
+            return json.load(f)
+
+    def _build_scope_tree(self, scopes_data: List['EnergyScope']) -> List[Dict]:
+        """
+        Recursively build the tree structure for scopes from the scopes_data.
+        Assumes scopes don't have cycles
+
+        Returns:
+        List[Dict]: A list of dictionaries representing the root-level scopes with their sub-scopes.
+        """
+        scope_map = []
+
+        # Iterate over each scope in the input list
+        for scope in scopes_data:
+            scope_node = {
+                "id": scope.id,
+                "name": scope.name,
+                "label": scope.label,
+                "energy": 0,
+                "co2": 0,
+                "children": []
+            }
+
+            for sub_scope in scope.subScopes:
+                scope_node["children"].append({
+                    "parent": scope_node,
+                    "id": sub_scope.id,
+                    "name": sub_scope.name,
+                    "label": sub_scope.label,
+                    "energy": 0,
+                    "co2": 0,
+                    "children": []
+                })
+
+            scope_map.append(scope_node)
+
+        return scope_map
+
+    def find_child_by_id(self, tree, target_id):
+        """
+        Recursively traverse the list of root-level scopes (trees) to find a child with the given target_id.
+        This version supports a list of trees, where each root node is in the 'tree' list.
+        """
+        for root in tree:
+            if root["id"] == target_id:
+                return root
+
+            stack = [root]
+            while stack:
+                node = stack.pop()
+                if "id" in node and node["id"] == target_id:
+                    return node
+                if "children" in node:
+                    stack.extend(node["children"])
+
+        return None
+
+    def _assign_energy_entry(self, entry, tree, energy_source_name):
+        """
+        Assigns the energy and CO2 values by creating a new child node in the appropriate sub-scope.
+        """
+        node = self.find_child_by_id(tree, entry["scope_id"])
+        new_name = f"{node["name"]}.{len(node["children"]) + 1}"
+        new_child = {
+            "name": new_name,
+            "label": f"{energy_source_name} ({entry['description']})",
+            "energy": entry["energy"],
+            "co2": entry["co2"],
+            "children": []
         }
 
-        # Create mapping for sub-scopes (the sub-scope level)
-        self.SUB_SCOPE_MAP = {
-            sub.id: sub
-            for scope in self.SCOPES_DATA for sub in scope.subScopes
-        }
+        node["children"].append(new_child)
+
+        # Propagate summed values to parent nodes
+        parent_scope = node
+        while parent_scope:
+            parent_scope["energy"] += entry["energy"]
+            parent_scope["co2"] += entry["co2"]
+            parent_scope = parent_scope.get("parent")
 
     def calculate_co2_balance(self, energy_entries: List[CarbonFootprintRequestPayload]):
         """ Calculate CO2 balance based on energy entries. """
-        scope_results = {}
 
         for energy_entry in energy_entries:
+            # Get energy source details
             energySource = self.ENERGY_SOURCES.get(energy_entry.energySourceId)
             if not energySource:
-                raise HTTPException(status_code=400, detail=f"Invalid energySourceId: {energy_entry.energySourceId}")
+                raise HTTPException(
+                    status_code=400, detail=f"Invalid energySourceId: {energy_entry.energySourceId}")
 
             conversion_factor = energySource.conversionFactor
             emission_factor = energySource.emissionFactor
@@ -64,50 +136,22 @@ class CalculateCarbonFootprint:
             energy = round(energy_entry.consumption * conversion_factor, 5)
             co2 = round((energy * effective_emission_factor) / 1000, 5)
 
-            # Find parent scope and sub-scope
-            parent_scope = self.SCOPE_MAP.get(scope_id)
-            sub_scope = self.SUB_SCOPE_MAP.get(scope_id)
-
-            if not parent_scope or not sub_scope:
-                raise ValueError("Scope data is missing parent_scope is {parent_scope} and sub_scope is {sub_scope}")            
-
-            # Organize by main scope
-            if parent_scope["name"] not in scope_results:
-                scope_results[parent_scope["name"]] = {
-                    "name": parent_scope["name"],
-                    "label": parent_scope["label"],
-                    "energy": 0,
-                    "co2": 0,
-                    "children": {}
-                }
-
-            # Organize by sub-scope
-            if scope_id not in scope_results[parent_scope["name"]]["children"]:
-                scope_results[parent_scope["name"]]["children"][scope_id] = {
-                    "name": sub_scope.name,
-                    "label": sub_scope.label,
-                    "energy": 0,
-                    "co2": 0,
-                    "children": []
-                }
-
-            # Append entry as a child node
-            entry_label = f"{name} ({energy_entry.description})"
-            scope_results[parent_scope["name"]]["children"][scope_id]["children"].append({
-                "name": sub_scope.name + ".1",  # Dynamic sub-sub-scope ID
-                "label": entry_label,
+            # Assign energy and CO2 values to the appropriate node in the tree
+            energy_entry_data = {
+                "scope_id": scope_id,
                 "energy": energy,
                 "co2": co2,
-                "children": []
-            })
+                "description": energy_entry.description
+            }
+            self._assign_energy_entry(energy_entry_data, self.SCOPE_TREE, name)
 
-            # Accumulate values
-            scope_results[parent_scope["name"]]["children"][scope_id]["energy"] += energy
-            scope_results[parent_scope["name"]]["children"][scope_id]["co2"] += co2
-            scope_results[parent_scope["name"]]["energy"] += energy
-            scope_results[parent_scope["name"]]["co2"] += co2
+        return self.convert_scope_tree(self.SCOPE_TREE)
 
-        for scope in scope_results.values():
-            scope["children"] = list(scope["children"].values())
+    def convert_scope_tree(self, tree):
+        # TODO use serializer instead
+        for node in tree:
+            node.pop("id", None)
+            node.pop("parent", None)
+            node["children"] = self.convert_scope_tree(node["children"])
 
-        return list(scope_results.values())
+        return tree

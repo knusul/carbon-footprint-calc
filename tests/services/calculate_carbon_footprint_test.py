@@ -1,7 +1,8 @@
 import pytest
 from app.services.calculate_carbon_footprint import CalculateCarbonFootprint
 from app.models.carbon_footprint_request_payload import CarbonFootprintRequestPayload
-from app.models.energy_source import EnergySource 
+from app.models.energy_source import EnergySource
+
 
 @pytest.fixture()
 def payload():
@@ -20,7 +21,6 @@ def payload():
     ]
 
 
-
 @pytest.fixture()
 def expected_response():
     return [
@@ -31,23 +31,8 @@ def expected_response():
             "co2": 3.5,
             "children": [
                 {
-                    "name": "1.2",
-                    'label': 'Treibstoffe für Mobilität/Flotte',
-                    "energy": 10000.0,
-                    "co2": 2.5,
-                    "children": [
-                        {
-                            "name": "1.2.1",
-                            "label": "Diesel (Standort Berlin)",
-                            "energy": 10000.0,
-                            "co2": 2.5,
-                            "children": []
-                        }
-                    ]
-                },
-                {
                     "name": "1.1",
-                    'label': 'Brennstoffe / Wärme',
+                    "label": "Brennstoffe / Wärme",
                     "energy": 4000.0,
                     "co2": 1.0,
                     "children": [
@@ -56,21 +41,72 @@ def expected_response():
                             "label": "Erdgas (Standort München)",
                             "energy": 4000.0,
                             "co2": 1.0,
-                            "children": []
+                            "children": [],
                         }
-                    ]
+                    ],
+                },
+                {
+                    "name": "1.2",
+                    "label": "Treibstoffe für Mobilität/Flotte",
+                    "energy": 10000.0,
+                    "co2": 2.5,
+                    "children": [
+                        {
+                            "name": "1.2.1",
+                            "label": "Diesel (Standort Berlin)",
+                            "energy": 10000.0,
+                            "co2": 2.5,
+                            "children": [],
+                        }
+                    ],
+                },
+            ],
+        },
+        {
+            "name": "Scope 2",
+            "label": "Bezogene Energien",
+            "energy": 0,
+            "co2": 0,
+            "children": [
+                {
+                    "name": "2.1",
+                    "label": "Strom inkl. E-Flotte",
+                    "energy": 0,
+                    "co2": 0,
+                    "children": [],
+                },
+                {
+                    "name": "2.2",
+                    "label": "Fernwärme/-kälte",
+                    "energy": 0,
+                    "co2": 0,
+                    "children": [],
+                },
+                {
+                    "name": "2.3",
+                    "label": "Ferndampf",
+                    "energy": 0,
+                    "co2": 0,
+                    "children": [],
+                },
+            ],
+        },
+        {
+            "name": "Scope 3",
+            "label": "Vor- und nachgelagerte Wertschöpfungskette",
+            "energy": 0,
+            "co2": 0,
+            "children": [
+                {
+                    "name": "3.6",
+                    "label": "Dienstreisen",
+                    "energy": 0,
+                    "co2": 0,
+                    "children": [],
                 }
-            ]
-        }
+            ],
+        },
     ]
-
-
-def test_calculate_carbon_footprint(payload, expected_response):
-    service = CalculateCarbonFootprint()
-
-    result = service.calculate_co2_balance(payload)
-    assert result == expected_response
-
 
 @pytest.fixture()
 def mock_carbon_footprint_service():
@@ -96,4 +132,5 @@ def mock_carbon_footprint_service():
 
 def test_calculate_carbon_footprint(mock_carbon_footprint_service, payload, expected_response):
     result = mock_carbon_footprint_service.calculate_co2_balance(payload)
+    print(result)
     assert result == expected_response
