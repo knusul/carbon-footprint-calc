@@ -29,7 +29,7 @@ class CalculateCarbonFootprint:
 
         # Build the tree of scopes
         self.SCOPE_TREE = self._build_scope_tree(self.SCOPES_DATA)
-        
+
     def load_data(self, file_name: str):
         """ Load JSON data from the file. """
         path = Path(__file__).resolve().parent.parent / "mocks" / file_name
@@ -121,9 +121,8 @@ class CalculateCarbonFootprint:
             # Get energy source details
             energySource = self.ENERGY_SOURCES.get(energy_entry.energySourceId)
             if not energySource:
-                raise HTTPException(
-                    status_code=400, detail=f"Invalid energySourceId: {energy_entry.energySourceId}")
-
+                raise ValueError(
+                f"Invalid energySourceId: {energy_entry.energySourceId}")
             conversion_factor = energySource.conversionFactor
             emission_factor = energySource.emissionFactor
             scope_id = energySource.scopeId

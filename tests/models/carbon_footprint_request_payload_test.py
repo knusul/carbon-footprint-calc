@@ -19,6 +19,15 @@ def test_invalid_consumption_more_than_5_decimals():
             consumption=123.456789,  # 6 decimal places (should fail)
         )
 
+def test_invalid_customEmissionFactor_more_than_5_decimals():
+    with pytest.raises(ValidationError, match="consumption must have a maximum of 5 decimal places"):
+        CarbonFootprintRequestPayload(
+            description="Test Energy",
+            energySourceId="ES123",
+            consumption=12
+            customEmissionFactor=123.456789,  # 6 decimal places (should fail)
+        )
+
 def test_consumption_no_decimal():
     entry = CarbonFootprintRequestPayload(
         description="Test Energy",

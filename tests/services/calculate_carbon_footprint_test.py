@@ -17,6 +17,11 @@ def payload():
             consumption=4000,
             customEmissionFactor=0.25,
             description="Standort München"
+        ),
+        CarbonFootprintRequestPayload(
+            energySourceId="4005",
+            consumption=10000,
+            description="Flug nach Thailand"
         )
     ]
 
@@ -94,19 +99,28 @@ def expected_response():
         {
             "name": "Scope 3",
             "label": "Vor- und nachgelagerte Wertschöpfungskette",
-            "energy": 0,
-            "co2": 0,
+            "energy": 10000.0,
+            "co2": 2.0,
             "children": [
                 {
                     "name": "3.6",
                     "label": "Dienstreisen",
-                    "energy": 0,
-                    "co2": 0,
-                    "children": [],
+                    "energy": 10000.0,
+                    "co2": 2.0,
+                    "children": [
+                        {
+                            "name": "3.6.1",
+                            "label": "Flugzeug (Business Class) (Flug nach Thailand)",
+                            "energy": 10000.0,
+                            "co2": 2.0,
+                            "children": [],
+                        }
+                    ],
                 }
             ],
         },
     ]
+
 
 @pytest.fixture()
 def mock_carbon_footprint_service():
@@ -124,6 +138,13 @@ def mock_carbon_footprint_service():
             name="Erdgas",
             conversionFactor="1",
             emissionFactor="0.2"
+        ),
+        "4005": EnergySource(
+            energySourceId="4005",
+            scopeId="SCOPE_3_6",
+            name="Flugzeug (Business Class)",
+            conversionFactor="1",
+            emissionFactor="0.2"
         )
     }
 
@@ -132,5 +153,16 @@ def mock_carbon_footprint_service():
 
 def test_calculate_carbon_footprint(mock_carbon_footprint_service, payload, expected_response):
     result = mock_carbon_footprint_service.calculate_co2_balance(payload)
-    print(result)
     assert result == expected_response
+
+def test_throws_error_when_energy_source_id_does_not_exist(mock_carbon_footprint_service):
+    payload = [
+        CarbonFootprintRequestPayload(
+            energySourceId="999999",
+            consumption=1000,
+            description="Standort Berlin"
+        ),
+    ]
+    
+    with pytest.raises(ValueError, match="Invalid energySourceId: 999999"):
+        mock_carbon_footprint_service.calculate_co2_balance(payload)
