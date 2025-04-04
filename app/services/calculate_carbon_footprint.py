@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional, Any
 from app.models.carbon_footprint_request_payload import CarbonFootprintRequestPayload
 from app.models.energy_source import EnergySource
 from app.models.energy_scope import EnergyScope
@@ -70,7 +70,7 @@ class CalculateCarbonFootprint:
 
         return scope_map
 
-    def find_child_by_id(self, tree, target_id):
+    def find_child_by_id(self, tree, target_id) -> Optional[Dict[str, Any]]:
         """
         Recursively traverse the list of root-level scopes (trees) to find a child with the given target_id.
         This version supports a list of trees, where each root node is in the 'tree' list.
@@ -89,7 +89,7 @@ class CalculateCarbonFootprint:
 
         return None
 
-    def _assign_energy_entry(self, entry, tree, energy_source_name):
+    def _assign_energy_entry(self, entry, tree, energy_source_name) -> None:
         """
         Assigns the energy and CO2 values by creating a new child node in the appropriate sub-scope.
         """

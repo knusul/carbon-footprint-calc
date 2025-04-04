@@ -1,7 +1,8 @@
 import httpx
 import os
+from typing import List, Dict
 
-def get_scopes_data():
+def get_scopes_data() -> List[Dict]:
     scopes_endpoint = os.getenv("SCOPES_ENDPOINT","http://localhost:8002")
     scopes_data_url = scopes_endpoint + "/scopes.json"
 
