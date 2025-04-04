@@ -10,6 +10,7 @@ from app.services.calculate_carbon_footprint import CalculateCarbonFootprint
 from app.services.verify_jwt_token import verify_jwt_token
 from app.services.get_scopes_data import get_scopes_data
 from app.services.get_energy_sources import get_energy_sources
+from typing import Dict, Any
 import jwt
 
 load_dotenv()
@@ -19,16 +20,19 @@ app = FastAPI()
 # OAuth2 password bearer scheme to receive JWT token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+
+def get_current_user(token: str = Depends(oauth2_scheme)) -> Any:
     return verify_jwt_token(token)
 
 # lookup controller for swagger to create JWT token from username/password
-# after successful auth swagger ui adds JWT token to request headers 
+# after successful auth swagger ui adds JWT token to request headers
+
+
 @app.post("/token", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()) ->  Dict[str, str]:
     username = os.getenv("USERNAME", "testuser")
     password = os.getenv("PASSWORD", "testpassword")
-    
+
     if form_data.username == username and form_data.password == password:
         SECRET_KEY = os.getenv("SECRET_KEY")
         ALGORITHM = os.getenv("ALGORITHM")
@@ -39,11 +43,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         detail="Incorrect username or password",
     )
 
+
 @app.post("/carbon-footprint", response_model=List[CarbonFootprintResponse])
 async def calculate_co2_balance(
-    energy_entries: List[CarbonFootprintRequestPayload], 
-    current_user: dict = Depends(get_current_user)  # Force token verification
-):
+    energy_entries: List[CarbonFootprintRequestPayload],
+    current_user: Any= Depends(
+        get_current_user)  # Force token verification
+) -> Any: # Implement type
     # TODO: This logic does not belong to a controller responsibility. Think about refactoring it and moving away from the controller.
     try:
         energy_sources = get_energy_sources()
@@ -53,7 +59,7 @@ async def calculate_co2_balance(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    
+
     service = CalculateCarbonFootprint(energy_sources, scopes_data)
     result = service.calculate_co2_balance(energy_entries)
     return result

@@ -45,3 +45,12 @@ def test_optional_custom_emission_factor():
         customEmissionFactor=None
     )
     assert entry.customEmissionFactor is None
+
+def test_accepts_without_comma():
+    entry = CarbonFootprintRequestPayload(
+        description="Test Energy",
+        energySourceId="ES123",
+        consumption=Decimal("99"),
+        customEmissionFactor=None
+    )
+    assert entry.customEmissionFactor is None

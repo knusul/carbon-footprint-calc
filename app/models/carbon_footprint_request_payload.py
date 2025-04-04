@@ -1,25 +1,28 @@
 from pydantic import BaseModel, field_validator
 from typing import Optional
 from decimal import Decimal
+from typing import cast
 
 class CarbonFootprintRequestPayload(BaseModel):
     description: str
     energySourceId: str
-    consumption: Decimal  # Use Decimal instead of float
-    customEmissionFactor: Optional[Decimal] = None  # Use Decimal instead of float
+    consumption: Decimal
+    customEmissionFactor: Optional[Decimal] = None
 
     @field_validator("consumption", "customEmissionFactor", mode="before")
     @classmethod
-    def validate_decimal_places(cls, value):
-        if value is None:  # ✅ Allow None for optional fields
+    def validate_decimal_places(cls, value: Optional[Decimal]) -> Optional[Decimal]:
+        if value is None: 
             return value
 
         if isinstance(value, float):
-            value = Decimal(str(value))  # Convert to Decimal for precision
+            value = Decimal(str(value)) 
+        elif isinstance(value, int):
+            value = Decimal(value)
         elif not isinstance(value, Decimal):
-            raise ValueError("Value must be a Decimal or float")
+            raise ValueError("Value must be a Decimal, float, or int")
 
-        if value.as_tuple().exponent < -5:  # More than 5 decimal places
+        if cast(int, value.as_tuple().exponent) < -5:
             raise ValueError(f"{cls.__name__}: {value} must have a maximum of 5 decimal places")
 
         return value
