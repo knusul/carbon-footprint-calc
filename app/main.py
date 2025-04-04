@@ -8,6 +8,8 @@ from app.models.carbon_footprint_response import CarbonFootprintResponse
 from app.models.token import Token
 from app.services.calculate_carbon_footprint import CalculateCarbonFootprint
 from app.services.verify_jwt_token import verify_jwt_token
+from app.services.get_scopes_data import get_scopes_data
+from app.services.get_energy_sources import get_energy_sources
 import jwt
 
 load_dotenv()
@@ -20,6 +22,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 def get_current_user(token: str = Depends(oauth2_scheme)):
     return verify_jwt_token(token)
 
+# lookup controller for swagger to create JWT token from username/password
+# after successful auth swagger ui adds JWT token to request headers 
 @app.post("/token", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     username = os.getenv("USERNAME", "testuser")
@@ -38,8 +42,18 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 @app.post("/carbon-footprint", response_model=List[CarbonFootprintResponse])
 async def calculate_co2_balance(
     energy_entries: List[CarbonFootprintRequestPayload], 
-    current_user: dict = Depends(get_current_user)  # force run token verification
+    current_user: dict = Depends(get_current_user)  # Force token verification
 ):
-    service = CalculateCarbonFootprint()
+    # This logic does not belong to a controller responsibility. Think about refactoring it and moving away from the controller.
+    try:
+        energy_sources = get_energy_sources()
+        scopes_data = get_scopes_data()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+    
+    service = CalculateCarbonFootprint(energy_sources, scopes_data)
     result = service.calculate_co2_balance(energy_entries)
     return result

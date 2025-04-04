@@ -12,8 +12,8 @@ class CalculateCarbonFootprint:
             entry["energySourceId"]: EnergySource(**entry) for entry in energy_sources or self.load_data("energy_sources.json")
         }
 
-        self.SCOPES_DATA = scopes_data or [
-            EnergyScope(**scope) for scope in self.load_data("scopes.json")
+        self.SCOPES_DATA = [
+            EnergyScope(**scope) for scope in scopes_data or self.load_data("scopes.json")
         ]
 
         if not isinstance(self.SCOPES_DATA, list):
@@ -93,7 +93,7 @@ class CalculateCarbonFootprint:
         Assigns the energy and CO2 values by creating a new child node in the appropriate sub-scope.
         """
         node = self.find_child_by_id(tree, entry["scope_id"])
-        new_name = f"{node["name"]}.{len(node["children"]) + 1}"
+        new_name = f"{node['name']}.{len(node['children']) + 1}"
         new_child = {
             "name": new_name,
             "label": f"{energy_source_name} ({entry['description']})",

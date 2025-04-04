@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  fastapi_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - ENV=production
+      - ENERGY_SOURCES_ENDPOINT=http://energy_sources_api:8002
+      - SCOPES_ENDPOINT=http://scopes_api:8001
+    depends_on:
+      - scopes_api
+      - energy_sources_api
+
+  scopes_api:
+    image: python:3.9
+    container_name: scopes_api
+    working_dir: /app
+    volumes:
+      - ./app/mocks:/app/mocks  # Mount local mocks folder
+    command: python -m http.server 8001 --directory /app/mocks
+    ports:
+      - "8001:8001"
+
+  energy_sources_api:
+    image: python:3.9
+    container_name: energy_sources_api
+    working_dir: /app
+    volumes:
+      - ./app/mocks:/app/mocks  # Mount local mocks folder
+    command: python -m http.server 8002 --directory /app/mocks
+    ports:
+      - "8002:8002"
+
