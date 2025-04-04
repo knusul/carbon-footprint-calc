@@ -116,7 +116,6 @@ class CalculateCarbonFootprint:
         """ Calculate CO2 balance based on energy entries. """
 
         for energy_entry in energy_entries:
-            # Get energy source details
             energySource = self.ENERGY_SOURCES.get(energy_entry.energySourceId)
             if not energySource: # TODO: invalid input generates 500 but should be handled gracefully
                 raise ValueError(
@@ -144,6 +143,7 @@ class CalculateCarbonFootprint:
 
         return self.convert_scope_tree(self.SCOPE_TREE)
 
+    # TODO: Its not a best idea to modify the original structure representing the response from 3rd party service. Instead new structure should be created
     def convert_scope_tree(self, tree):
         # TODO use serializer instead
         for node in tree:
