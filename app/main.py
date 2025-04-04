@@ -44,7 +44,7 @@ async def calculate_co2_balance(
     energy_entries: List[CarbonFootprintRequestPayload], 
     current_user: dict = Depends(get_current_user)  # Force token verification
 ):
-    # This logic does not belong to a controller responsibility. Think about refactoring it and moving away from the controller.
+    # TODO: This logic does not belong to a controller responsibility. Think about refactoring it and moving away from the controller.
     try:
         energy_sources = get_energy_sources()
         scopes_data = get_scopes_data()

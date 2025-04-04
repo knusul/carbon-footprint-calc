@@ -117,7 +117,7 @@ class CalculateCarbonFootprint:
         for energy_entry in energy_entries:
             # Get energy source details
             energySource = self.ENERGY_SOURCES.get(energy_entry.energySourceId)
-            if not energySource:
+            if not energySource: # TODO: invalid input generates 500 but should be handled gracefully
                 raise ValueError(
                 f"Invalid energySourceId: {energy_entry.energySourceId}")
             conversion_factor = Decimal(energySource.conversionFactor)

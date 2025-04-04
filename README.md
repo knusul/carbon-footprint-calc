@@ -13,6 +13,12 @@ The API will be available at:
 http://localhost:8000
 ```
 
+To run tests, use the following command:
+```bash
+
+pytest
+``` 
+
 📘 API Documentation
 You can access the interactive Swagger UI at:
 
