@@ -6,6 +6,7 @@ from app.models.energy_source import EnergySource
 from app.models.energy_scope import EnergyScope
 from decimal import Decimal
 
+#TODO validate if the energy_sources and scopes ids are valid. Validate if a tree is not a graph with cycles
 class CalculateCarbonFootprint:
     def __init__(self, energy_sources: Dict[str, EnergySource] = None, scopes_data: List[dict] = None):
         self.ENERGY_SOURCES = {
